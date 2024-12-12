@@ -1,9 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { ReactComponent as Arrow } from "../assets/icons/BackArow.svg";
 import ProfileBanner from "../assets/images/Profile Banner.png";
-import ProfileIcon from "../assets/images/ProfileIcon.png";
 import { Link } from "react-router-dom";
-import { auth } from "../utils/firebase";
 import { useDispatch, useSelector } from "react-redux";
 import { GetUserService, updateProfile } from "../services/userService";
 
@@ -43,8 +41,6 @@ const Profile = () => {
       .catch((err) => console.log("error in updating profile"));
   };
 
-  console.log("user", user);
-
   const handleClick = () => {
     fileInputRef.current.click(); // Trigger the hidden input click
   };
@@ -55,11 +51,10 @@ const Profile = () => {
       reader.readAsDataURL(val);
       reader.onload = () => {
         const imageslist = reader.result;
-        console.log("imageslist", imageslist);
         setProfileData({
-          ...profileData, 
-          photoURL: imageslist
-         });
+          ...profileData,
+          photoURL: imageslist,
+        });
       };
     });
   };
@@ -74,16 +69,14 @@ const Profile = () => {
       reader.readAsDataURL(val);
       reader.onload = () => {
         const imageslist = reader.result;
-        console.log("imageslist", imageslist);
         setProfileData({
           ...profileData,
-          profileBanner: imageslist
-         });
+          profileBanner: imageslist,
+        });
       };
     });
   };
 
-  console.log("pprofie", profileData);
   return (
     <div className="min-h-screen flex justify-start bg-white">
       <div className="w-full max-w-md mx-auto bg-white rounded-md shadow-md overflow-hidden">
@@ -99,7 +92,10 @@ const Profile = () => {
           >
             <Arrow /> Edit Profile
           </Link>
-          <button className="absolute top-6 right-6  bg-white p-1 rounded-full shadow-md" onClick={handleBannerClick}>
+          <button
+            className="absolute top-6 right-6  bg-white p-1 rounded-full shadow-md"
+            onClick={handleBannerClick}
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"

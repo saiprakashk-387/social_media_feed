@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Provider } from "react-redux";
 
+import { ReactComponent as Rotate } from "./assets/icons/Rotate.svg";
 import Login from "./screens/Login";
 import MyAccount from "./screens/MyAccount";
 import Dashboard from "./screens/Dashboard";
@@ -24,22 +25,19 @@ const App = () => {
       }
     });
 
-    return () => unsubscribe(); // Cleanup listener
+    return () => unsubscribe();
   }, []);
   return (
     <Provider store={store}>
-      {/* <RouterProvider router={router} /> */}
-      {/* <div className="fixed top-0 bottom-0 left-0 right-0 z-50 h-screen w-screen hidden lg:flex xs:landscape:flex flex-col items-center justify-center bg-white">
+      <div className="fixed top-0 bottom-0 left-0 right-0 z-50 h-screen w-screen hidden lg:flex xs:landscape:flex flex-col items-center justify-center bg-white">
         <Rotate className="flex-shrink-0 h-32 w-36" />
         <p className="mt-6 w-72 text-darkgray text-lg text-center">
           Please rotate your phone to access the application.
         </p>
-      </div> */}
+      </div>
 
       <BrowserRouter>
         <div>
-          {/* <Rotate className="flex-shrink-0 h-32 w-36" /> */}
-          {/* {user ? <AdminNavbar /> : <CustomerNavbar />} */}
           <Routes>
             <Route
               path="/"

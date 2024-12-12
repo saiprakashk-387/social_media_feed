@@ -1,57 +1,17 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 import { ReactComponent as Arrow } from "../assets/icons/BackArow.svg";
 import FloatingIcon from "../assets/icons/Add Floating Button.svg";
 import ProfileBanner from "../assets/images/Profile Banner.png";
-import ProfileIcon from "../assets/images/ProfileIcon.png";
 import { ReactComponent as Loader } from "../assets/icons/Loader.svg";
 import { useDispatch, useSelector } from "react-redux";
 import { GetUserService } from "../services/userService";
-
-const posts = [
-  {
-    id: 1,
-    image: ProfileBanner,
-    title: "Design meet",
-    likes: 67,
-    badge: "1/2",
-  },
-  {
-    id: 2,
-    image: "https://via.placeholder.com/300x200",
-    title: "Working on a B2B...",
-    likes: 40,
-  },
-  {
-    id: 3,
-    image: "https://via.placeholder.com/300x200",
-    title: "Parachute ❤️",
-    likes: 65,
-  },
-  {
-    id: 4,
-    image: ProfileBanner,
-    title: "Design meet",
-    likes: 67,
-    badge: "1/2",
-  },
-  {
-    id: 5,
-    image: "https://via.placeholder.com/300x200",
-    title: "Working on a B2B...",
-    likes: 40,
-  },
-  {
-    id: 6,
-    image: "https://via.placeholder.com/300x200",
-    title: "Parachute ❤️",
-    likes: 65,
-  },
-];
+import { GetPostService } from "../services/postService";
 
 const MyAccount = () => {
   const { user } = useSelector((state) => state.users);
+  const { allPosts } = useSelector((state) => state.posts);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -59,9 +19,13 @@ const MyAccount = () => {
 
   useEffect(() => {
     dispatch(GetUserService());
+    dispatch(GetPostService());
   }, []);
 
-  console.log(user);
+  const filterPost = allPosts?.filter(
+    (myPost) => myPost?.postBy?.email === user?.email
+  );
+  console.log("filterPost", filterPost);
 
   return (
     <div className="min-h-screen justify-center bg-white">
@@ -89,38 +53,32 @@ const MyAccount = () => {
             />
           </div>
           <button
-            className="mt-24 text-[#000000] py-1 ml-auto mr-2 bg-white px-12 rounded-3xl shadow-sm border border-[#00000057]"
+            className="mt-24 text-[#000000] py-1 ml-auto mr-2 bg-white px-12 rounded-3xl"
             onClick={() => navigate("/my-profile")}
           >
             Edit Profile
           </button>
         </div>
-        <div className="py-2 px-4">
-          <h1 className="text-[#000000] text-2xl">{user.name}</h1>
-          <p className="text-[#000000] text-sm">
-            Just someone who loves designing, sketching, and finding beauty in
-            the little things 💕
-          </p>
+        <div className="my-2 mx-4 h-full">
+          <h1 className="text-[#000000] text-2xl">{user?.name}</h1>
+          <p className="text-[#000000] text-sm">{user?.bio}</p>
           <h1 className="mt-3 text-[#000000] text-2xl">My Posts</h1>
           <div className="grid grid-cols-2 gap-4">
-            {posts.map((post) => (
+            {filterPost?.map((post, i) => (
               <div
-                key={post.id}
+                key={i}
                 className="relative bg-white rounded-lg shadow-md overflow-hidden"
               >
-                {/* Image */}
                 <img
-                  src={post.image}
-                  alt={post.title}
+                  src={post.imageURL}
+                  alt={post.desc}
                   className="h-40 w-full object-cover"
                 />
-                {/* Badge */}
-                {post.badge && (
-                  <div className="absolute top-2 right-2 bg-black bg-opacity-50 text-white text-xs font-bold px-2 py-1 rounded-full">
-                    {post.badge}
-                  </div>
-                )}
-                {/* Content */}
+
+                <div className="absolute top-2 right-2 bg-black bg-opacity-50 text-white text-xs font-bold px-2 py-1 rounded-full">
+                  {i + 1}
+                </div>
+
                 <div className="p-2">
                   <h2 className="text-sm font-medium truncate">{post.title}</h2>
                   <div className="flex items-center text-gray-500 text-xs mt-1">
@@ -148,7 +106,7 @@ const MyAccount = () => {
       </div>
       <button
         className="fixed bottom-6 right-6 p-4 w-1/4 rounded-full "
-        onClick={() => ""}
+        onClick={() => navigate("/add-post")}
       >
         <img
           src={FloatingIcon}

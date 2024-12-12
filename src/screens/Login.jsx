@@ -4,29 +4,16 @@ import AuthBackground from "../assets/icons/AuthBackground.svg";
 import AppContent from "../assets/images/Content.png";
 import GoogleButton from "../assets/images/Googlesignin.png";
 import { ReactComponent as Loader } from "../assets/icons/Loader.svg";
-import { useNavigate, useParams } from "react-router-dom";
-import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
-import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import { SigninWithGoogle } from "../services/userService";
 
 const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  // const { referal } = useParams();
-  // const [isModalOpen, setModalOpen] = useState(true);
-  // const [isLoading, setLoading] = useState(false);;
-
 
   const GoogleSignInModal = ({ isOpen, onClose }) => {
     const modalStyle = isOpen ? "block" : "hidden";
-    // const SigninWithGoogle = () => {
-    //   const provider = new GoogleAuthProvider();
-    //   signInWithPopup(auth, provider).then(async (res) => {
-    //     if (res.user) navigate("/", { replace: true });
-    //     console.log("rss", res);
-    //   });
-    //   // navigate("/", { replace: true })
-    // };
 
     return (
       <div className={`fixed inset-0 overflow-y-auto ${modalStyle}`}>
@@ -49,9 +36,11 @@ const Login = () => {
             />
             <button
               className="w-full relative  right-0 text-white  bg-[#264488] border rounded-[35px] mt-10"
-              onClick={() => dispatch(SigninWithGoogle()).then(() => {
-                navigate('/')
-              })}
+              onClick={() =>
+                dispatch(SigninWithGoogle()).then(() => {
+                  navigate("/");
+                })
+              }
             >
               <img
                 src={GoogleButton}
