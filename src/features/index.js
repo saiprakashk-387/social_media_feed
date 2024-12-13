@@ -6,7 +6,7 @@ import postSlice from "./postSlice";
 const store = configureStore({
   reducer: {
     users: userSlice,
-    posts: postSlice
+    posts: postSlice,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({ serializableCheck: false }).concat(logger),
