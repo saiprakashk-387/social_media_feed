@@ -1,33 +1,16 @@
-import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
-import { auth, db } from "../utils/firebase";
 import {
-  collection,
-  addDoc,
-  getDocs,
-  setDoc,
-  doc,
-  updateDoc,
-  getDoc,
-} from "firebase/firestore";
-import { addUser, getUser, updateUser } from "../features/userSlice";
-export const AddList = (data) => async (dispatch) => {
-  try {
-    const user = auth.currentUser;
-    if (!user) {
-      console.error("User is not authenticated.");
-      return;
-    }
-    //   dispatch(IsLoading(true));
-    const docRef = await addDoc(collection(db, "users"), data);
-    dispatch(addUser(data));
-    //   dispatch(IsLoading(false));
-  } catch (err) {
-    alert(err.message);
-  }
-};
+  createUserWithEmailAndPassword,
+  GoogleAuthProvider,
+  signInWithPopup,
+  updateProfile as updateCurrentUser,
+} from "firebase/auth";
+import { auth, db } from "../utils/firebase";
+import { setDoc, doc, updateDoc, getDoc } from "firebase/firestore";
+import { getUser, updateUser } from "../features/userSlice";
+import { showLoading } from "../features/commonSlice";
+import { toast } from "react-toastify";
 
 export const SigninWithGoogle = () => async () => {
-  // setLoading(true);
   try {
     const provider = new GoogleAuthProvider();
     const result = await signInWithPopup(auth, provider);
@@ -44,9 +27,29 @@ export const SigninWithGoogle = () => async () => {
     });
   } catch (err) {
     console.error(err);
-  } finally {
-    // setLoading(false);
   }
+};
+
+export const CreateAccountService = (data) => async (dispatch) => {
+  dispatch(showLoading(true));
+  await createUserWithEmailAndPassword(auth, data.email, data.password)
+    .then((userData) => {
+      const user = auth.currentUser;
+      const userDocRef = doc(db, "users", user?.uid);
+      setDoc(userDocRef, {
+        name: data.username,
+        email: userData?.user?.email,
+        photoURL:
+          "https://cdn.pixabay.com/photo/2012/04/26/19/43/profile-42914_640.png",
+        bio: "",
+        bannerImage: "",
+        createdAt: new Date(),
+      });
+      dispatch(showLoading(false));
+    })
+    .catch((error) => {
+      toast.error(error.message);
+    });
 };
 
 export const updateProfile = (data) => async (dispatch) => {
@@ -73,12 +76,10 @@ export const GetUserService = () => async (dispatch) => {
       console.error("User is not authenticated.");
       return;
     }
-    //   dispatch(IsLoading(true));
     const userDocRef = doc(db, "users", user.uid);
     const userDoc = await getDoc(userDocRef);
 
-    dispatch(getUser(userDoc.data()));
-    //   dispatch(IsLoading(false));
+    dispatch(getUser(userDoc?.data()));
   } catch (err) {
     alert(err.message);
   }

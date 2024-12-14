@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 
 import AuthBackground from "../assets/icons/AuthBackground.svg";
 import AppContent from "../assets/images/Content.png";
@@ -14,7 +14,18 @@ const Login = () => {
 
   const GoogleSignInModal = ({ isOpen, onClose }) => {
     const modalStyle = isOpen ? "block" : "hidden";
-
+    const [isLoading, setLoading] = useState(false);
+    const handleGoogleSignIn = async () => {
+      try {
+        setLoading(true);
+        dispatch(SigninWithGoogle()).then(() => {
+          navigate("/");
+        });
+      } catch (err) {
+        console.log("Google-signin-error", err);
+        setLoading(false);
+      }
+    };
     return (
       <div className={`fixed inset-0 overflow-y-auto ${modalStyle}`}>
         <div className=" items-center justify-center">
@@ -26,7 +37,7 @@ const Login = () => {
               borderTopLeftRadius: "65px",
               borderTopRightRadius: "65px",
               bottom: 0,
-              top: "70%",
+              top: "60%",
             }}
           >
             <img
@@ -34,20 +45,32 @@ const Login = () => {
               alt="check"
               class="w-10/12 m-auto justify-center"
             />
-            <button
-              className="w-full relative  right-0 text-white  bg-[#264488] border rounded-[35px] mt-10"
-              onClick={() =>
-                dispatch(SigninWithGoogle()).then(() => {
-                  navigate("/");
-                })
-              }
-            >
-              <img
-                src={GoogleButton}
-                alt="Google"
-                class="w-full m-auto justify-center"
-              />
-            </button>
+            <>
+              <button
+                type="button"
+                onClick={() => navigate("/register")}
+                className="w-full bg-indigo-600 hover:bg-indigo-700 mt-4 rounded-[35px] text-white py-4 px-4 "
+              >
+                Login With Email
+              </button>
+              <div className="text-gray-500 text-center my-4">or</div>
+              {isLoading ? (
+                <button className="w-full relative  right-0 text-white  bg-[#264488] border rounded-[35px]">
+                  <Loader className="w-full p-2 h-12" />
+                </button>
+              ) : (
+                <button
+                  className="w-full relative  right-0 text-white  bg-[#264488] border rounded-[35px]"
+                  onClick={() => handleGoogleSignIn()}
+                >
+                  <img
+                    src={GoogleButton}
+                    alt="Google"
+                    class="w-full m-auto justify-center"
+                  />
+                </button>
+              )}
+            </>
           </div>
         </div>
       </div>

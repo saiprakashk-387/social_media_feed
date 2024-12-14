@@ -12,7 +12,9 @@ import { GetUserService } from '../services/userService';
 import { useDispatch, useSelector } from 'react-redux';
 function AppHeader() {
     const [ user ] = useAuthState(auth)
+    const {user: userData} = useSelector((state) => state.users)
     const { pathname } = useLocation();
+    const dispatch = useDispatch()
     const navigate = useNavigate()
     const [isOpen, setIsOpen] = useState(false);
     const greetingsText = useMemo(() => {
@@ -24,7 +26,9 @@ function AppHeader() {
             : "Good Evening";
       }, []);
 
-      
+      useEffect(() => {
+        dispatch(GetUserService())
+      },[])
     return (
 
         <main className=" max-w-lg mx-auto relative bg-white">
@@ -61,7 +65,7 @@ function AppHeader() {
                                             as="h2"
                                             className="text-lg font-medium truncate"
                                         >
-                                        {user?.displayName}
+                                        {user?.displayName ? user?.displayName : userData?.name}
                                         </Dialog.Title>
                                     </div>
                                     <button
@@ -133,7 +137,7 @@ function AppHeader() {
                 <div className="flex text-black">
                     <div className="w-1/2 rounded-3xl">
                         <img
-                            src={user?.photoURL}
+                            src={user?.photoURL ? user?.photoURL : userData?.photoURL}
                             alt="profile"
                             referrerPolicy="no-referrer" 
                             width={50}
@@ -145,7 +149,7 @@ function AppHeader() {
                         <h2 className="text-lg text-[#000000] font-medium truncate">
                             {/* {fname?.length > 0
                                 ? fname
-                                "SAI"} */}{user?.displayName}
+                                "SAI"} */} {user?.displayName ? user?.displayName : userData?.name}
                         </h2>
                     </div>
                 </div>

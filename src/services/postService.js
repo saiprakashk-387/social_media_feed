@@ -3,6 +3,7 @@ import { auth, db } from "../utils/firebase";
 import { collection, addDoc, getDocs, setDoc, doc, updateDoc, getDoc } from "firebase/firestore";
 import { addUser, getUser, updateUser } from "../features/userSlice";
 import { CreatePost, GetPosts } from "../features/postSlice";
+import { showLoading } from "../features/commonSlice";
 
 export const CreatePostService = (data) => async (dispatch) => {
     // setLoading(true);
@@ -12,6 +13,7 @@ export const CreatePostService = (data) => async (dispatch) => {
         return;
     }
     try {
+        dispatch(showLoading(true))
         const postDocRef = collection(db, "posts");
         const newPostDocRef = doc(postDocRef);
         await setDoc(newPostDocRef, {
@@ -19,17 +21,18 @@ export const CreatePostService = (data) => async (dispatch) => {
             desc: data.desc,
             createdAt: new Date(),
             postBy: {
-                name: user?.displayName,
-                photoURL: user?.photoURL,
-                email: user?.email
+                name: data?.postBy?.name,
+                photoURL: data?.postBy?.photoURL,
+                email: data?.postBy?.email
             }
         });
         dispatch(CreatePost(data))
-
+        dispatch(showLoading(false))
     } catch (err) {
         console.error(err);
     } finally {
         // setLoading(false);
+        dispatch(showLoading(false))
     }
 };
 
@@ -40,7 +43,7 @@ export const GetPostService = () => async (dispatch) => {
             console.error("User is not authenticated.");
             return;
         }
-        //   dispatch(IsLoading(true));
+        dispatch(showLoading(true))
         const postsCollectionRef = collection(db, "posts");
         const querySnapshot = await getDocs(postsCollectionRef);
 
@@ -50,8 +53,10 @@ export const GetPostService = () => async (dispatch) => {
         }));
         
         dispatch(GetPosts(fetchedPosts))
+        dispatch(showLoading(false))
         //   dispatch(IsLoading(false));
     } catch (err) {
         console.error(err.message);
+        dispatch(showLoading(false))
     }
 };

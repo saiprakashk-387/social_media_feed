@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { ReactComponent as Arrow } from "../assets/icons/BackArow.svg";
 import ProfileBanner from "../assets/images/Profile Banner.png";
+import { ReactComponent as Loader } from "../assets/icons/Loader.svg";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { GetUserService, updateProfile } from "../services/userService";
@@ -201,12 +202,18 @@ const Profile = () => {
         </div>
 
         <div className="p-4">
-          <button
-            className="w-full py-3 bg-black text-white font-bold rounded-full mt-40 shadow-md hover:bg-gray-800"
-            onClick={onSubmit}
-          >
-            {isLoading ? "Updating" : "Save"}
-          </button>
+          {isLoading ? (
+            <button className="w-full py-3 bg-black text-white font-bold rounded-full mt-40 shadow-md hover:bg-gray-800">
+              <Loader className="w-full  h-6" />
+            </button>
+          ) : (
+            <button
+              className="w-full py-3 bg-black text-white font-bold rounded-full mt-40 shadow-md hover:bg-gray-800"
+              onClick={onSubmit}
+            >
+              Save
+            </button>
+          )}
         </div>
       </div>
     </div>

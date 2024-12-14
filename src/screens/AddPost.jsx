@@ -1,16 +1,20 @@
 import React, { useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ReactComponent as Arrow } from "../assets/icons/BlackBackArrow.svg";
+import { ReactComponent as Loader } from "../assets/icons/Loader.svg";
 import { CreatePostService } from "../services/postService";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 const AddPost = () => {
+  const { user } = useSelector((state) => state.users);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [postData, setPostData] = useState({
     imageURL: "",
     desc: "",
   });
+  const [isLoading, setLoading] = useState(false);
+
   const fileBannerRef = useRef(null);
   const handleBannerClick = () => {
     fileBannerRef.current.click();
@@ -31,8 +35,19 @@ const AddPost = () => {
   };
 
   const onSubmit = () => {
-    dispatch(CreatePostService(postData)).then(() => {
+    setLoading(true);
+    const saveData = {
+      ...postData,
+      postBy: {
+        name: user?.name,
+        photoURL: user?.photoURL,
+        email: user?.email,
+      },
+    };
+
+    dispatch(CreatePostService(saveData)).then(() => {
       navigate(-1);
+      setLoading(false);
     });
   };
 
@@ -58,7 +73,7 @@ const AddPost = () => {
                 : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRoWn29_dfbByEYpOGzX0nwdyCE0WwS4vhwqlWw4cYP51DvunpV9WffbgfwGXmLBgbkGDk&usqp=CAU"
             }
             alt="Post Preview"
-            className="w-full h-auto object-cover"
+            className="w-full h-auto p-2 object-cover"
           />
           <input
             ref={fileBannerRef}
@@ -77,19 +92,24 @@ const AddPost = () => {
             setPostData((prev) => ({ ...prev, desc: e.target.value }))
           }
           rows="5"
-          placeholder="Surrounded by nature’s beauty, finding peace in every leaf, breeze, and sunset. 🌿🌞
-#NatureVibes #OutdoorEscape #EarthLover"
+          placeholder="Add a caption 🌿🌞"
           className="w-full mt-4 p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-gray-900"
         />
       </div>
 
       <div className="p-4">
-        <button
-          className="w-full py-3 bg-black text-white font-bold rounded-full shadow-md hover:bg-gray-800"
-          onClick={onSubmit}
-        >
-          CREATE
-        </button>
+        {isLoading ? (
+          <button className="w-full relative  right-0 text-white  bg-[black] border rounded-[35px]">
+            <Loader className="w-full p-2 h-12" />
+          </button>
+        ) : (
+          <button
+            className="w-full py-3 bg-black text-white font-bold rounded-full shadow-md hover:bg-gray-800"
+            onClick={onSubmit}
+          >
+            CREATE
+          </button>
+        )}
       </div>
     </div>
   );

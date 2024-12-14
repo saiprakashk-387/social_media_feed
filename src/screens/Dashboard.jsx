@@ -5,15 +5,16 @@ import FloatingIcon from "../assets/icons/Add Floating Button.svg";
 import PostCard from "../components/PostCard";
 import { useDispatch, useSelector } from "react-redux";
 import { GetPostService } from "../services/postService";
+import { GetUserService } from "../services/userService";
 
 const Dashboard = () => {
   const navigate = useNavigate();
-  const { user } = useSelector((state) => state.users);
   const { allPosts } = useSelector((state) => state.posts);
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(GetPostService());
+    dispatch(GetUserService());
   }, []);
 
   return (

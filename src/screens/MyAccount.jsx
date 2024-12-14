@@ -1,10 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 import { ReactComponent as Arrow } from "../assets/icons/BackArow.svg";
 import FloatingIcon from "../assets/icons/Add Floating Button.svg";
 import ProfileBanner from "../assets/images/Profile Banner.png";
-import { ReactComponent as Loader } from "../assets/icons/Loader.svg";
 import { useDispatch, useSelector } from "react-redux";
 import { GetUserService } from "../services/userService";
 import { GetPostService } from "../services/postService";
@@ -15,8 +14,6 @@ const MyAccount = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const [isLoading, setLoading] = useState(false);
-
   useEffect(() => {
     dispatch(GetUserService());
     dispatch(GetPostService());
@@ -25,7 +22,6 @@ const MyAccount = () => {
   const filterPost = allPosts?.filter(
     (myPost) => myPost?.postBy?.email === user?.email
   );
-  console.log("filterPost", filterPost);
 
   return (
     <div className="min-h-screen justify-center bg-white">
@@ -53,13 +49,13 @@ const MyAccount = () => {
             />
           </div>
           <button
-            className="mt-24 text-[#000000] py-1 ml-auto mr-2 bg-white px-12 rounded-3xl"
+            className="mt-24 text-[#000000] py-1 ml-16 mr-3 bg-white px-10 rounded-3xl border-2"
             onClick={() => navigate("/my-profile")}
           >
             Edit Profile
           </button>
         </div>
-        <div className="my-2 mx-4 h-full">
+        <div className="my-2 mx-4 min-h-screen">
           <h1 className="text-[#000000] text-2xl">{user?.name}</h1>
           <p className="text-[#000000] text-sm">{user?.bio}</p>
           <h1 className="mt-3 text-[#000000] text-2xl">My Posts</h1>
